@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "string": "c",
+        "wifitask.h": "c",
+        "wifi.h": "c",
+        "string.h": "c",
+        "wstring.h": "c",
+        "set": "cpp"
+    }
+}
