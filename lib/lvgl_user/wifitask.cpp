@@ -1,12 +1,8 @@
 #include "wifitask.h"
-// #include "WString.h"
-// #include <iostream>
-// #include <algorithm>
-// #include <set>
 
-unsigned long timeout = 5000; // 10sec
+unsigned long timeout = 5000; // 5sec
 
-/* 创建任务一和任务二的句柄，并初始化 */
+/* 创建连接WiFi和搜索WiFi的句柄，并初始化 */
 TaskHandle_t WIFIConnect;
 TaskHandle_t WIFISerch;
 
@@ -45,11 +41,6 @@ void scanWIFITask(void *pvParameters)
             // 清除下拉列表
             lv_dropdown_clear_options(ui_Dropdown1);
             vTaskDelay(10);
-            // set<String> WiFi_Name;
-            // for (int i = 0; i < n; ++i)
-            // {
-            //     WiFi_Name.insert(WiFi.SSID(i));
-            // }
 
             for (int i = 0; i < n; ++i)
             {
@@ -70,7 +61,7 @@ void connectWIFI()
     if (ssidName == NULL || ssidName.length() < 1 || password == NULL || password.length() < 1)
     {
         lv_label_set_text(ui_Label1, "");                                   // 清空文本输入框
-        lv_label_set_text(ui_Label1, "Please enter password and WiFiname"); // 清空文本输入框
+        lv_label_set_text(ui_Label1, "Please enter password and WiFiname"); // 输入提示语
         return;
     }
 
@@ -88,7 +79,7 @@ void connectWIFI()
 void beginWIFITask(void *pvParameters)
 {
     unsigned long startingTime = millis();
-    WiFi.begin(ssidName.c_str(), password.c_str());
+    WiFi.begin(ssidName.c_str(), password.c_str());  // 连接WiFi
 
     // WiFi 没有连接且 等待时间少于 timeout
     while (WiFi.status() != WL_CONNECTED && (millis() - startingTime) < timeout)
@@ -105,7 +96,7 @@ void beginWIFITask(void *pvParameters)
         lv_textarea_set_text(ui_TextArea1, "");       // 清空文本输入框
         lv_textarea_set_text(ui_TextArea1, charIp);   // 设置文本框 内容为IP地址
         lv_label_set_text(ui_Label1, "");             // 清空文本输入框
-        lv_label_set_text(ui_Label1, "Successfully"); // 设置头部标签 内容为重启
+        lv_label_set_text(ui_Label1, "Successfully"); // 设置头部标签 内容为成功连接到WiFi
     }
     else
     {
@@ -116,7 +107,7 @@ void beginWIFITask(void *pvParameters)
         lv_label_set_text(ui_Label1, restart.c_str()); // 设置头部标签 内容为重启
 
         lv_textarea_set_text(ui_TextArea1, "");             // 清空文本输入框
-        lv_textarea_set_text(ui_TextArea1, please.c_str()); // 清空文本输入框
+        lv_textarea_set_text(ui_TextArea1, please.c_str()); // 输入提示语
 
         vTaskDelay(250); //
         // networkScanner();
@@ -124,7 +115,7 @@ void beginWIFITask(void *pvParameters)
     }
 
     networkScanner(); // 启动搜索WiFi
-    vTaskDelete(NULL);
+    vTaskDelete(NULL);// 结束连接WiFi
 }
 
 // 断开连接
@@ -146,7 +137,7 @@ void Cancel_WiFi(void)
     {
         lv_textarea_set_text(ui_TextArea1, "");      // 清空文本输入框
         lv_label_set_text(ui_Label1, "");            // 清空文本输入框
-        lv_label_set_text(ui_Label1, "Select WiFi"); // 清空文本输入框
+        lv_label_set_text(ui_Label1, "Select WiFi"); // 显示Select WiFi
 
         vTaskDelete(WIFISerch); // 结束上次的搜索WiFi 进程
         vTaskDelay(300);        // 延时 300ms

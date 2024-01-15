@@ -1,6 +1,7 @@
 #include "lvgl_task.h"
 
 /************************************************************************************************/
+// 屏幕参数配置
 static const uint16_t screenWidth = 128;
 static const uint16_t screenHeight = 160;
 
@@ -9,11 +10,14 @@ static lv_color_t buf[screenWidth * screenHeight / 10];
 TFT_eSPI tft = TFT_eSPI(screenWidth, screenHeight); /* TFT instance */
 
 /***********************************************************************************************/
+
 /***********************************************************************************************/
 // 按键引脚定义 LED引脚定义
 #define PinA 19 // 左键引脚
 #define PinB 3  // 右键引脚
 #define PinC 9  // 确定键引脚
+
+/***********************************************************************************************/
 
 /***********************************************************************************************/
 
@@ -35,6 +39,15 @@ extern lv_obj_t * ui_Button2;
 /************************************************************************************************/
 /*                                 函数由此开始                                                  */
 /************************************************************************************************/
+
+// 按键初始化函数
+void my_key_init()
+{
+    pinMode(PinC, INPUT_PULLUP);
+    pinMode(PinA, INPUT_PULLUP);
+    pinMode(PinB, INPUT_PULLUP);
+}
+
 
 // 按键扫描函数，用于区分哪个按键按下了
 uint8_t Key_Scan()
@@ -103,13 +116,6 @@ void my_key_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
     data->key = last_key;
 }
 
-// 按键初始化函数
-void my_key_init()
-{
-    pinMode(PinC, INPUT_PULLUP);
-    pinMode(PinA, INPUT_PULLUP);
-    pinMode(PinB, INPUT_PULLUP);
-}
 
 // 刷新显示回调函数
 void my_disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_t *color_p)
